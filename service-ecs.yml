@@ -2,11 +2,11 @@ Parameters:
   NumCacheNodes:
     Type: String
     Description: Number of cache nodes
-    Default: 1
+    Default: 2
   CacheNodeType:
     Type: String
     Description: The compute and memory capacity of the node(s) in the Redis Cluster
-    Default: "cache.m3.medium"
+    Default: "cache.t2.micro"
     AllowedValues:
       - cache.t2.micro
       - cache.t2.small
@@ -43,6 +43,10 @@ Parameters:
       - cache.r3.2xlarge
       - cache.r3.4xlarge
       - cache.r3.8xlarge
+  AutomaticFailoverEnabled:
+    Type: String
+    Description: Indicates whether Multi-AZ is enabled. When Multi-AZ is enabled, a read-only replica is automatically promoted to a read-write primary cluster if the existing primary cluster fails.  
+    Default: "true"
 
 Resources:
   ElasticacheSubnetGroup:
@@ -72,15 +76,31 @@ Resources:
               Ref: ServiceSecurityGroup
 
   ElasticacheCluster:
-    Type: "AWS::ElastiCache::CacheCluster"
+    Type: "AWS::ElastiCache::ReplicationGroup"
     Properties:
       Engine: "redis"
       CacheNodeType:
         Ref: CacheNodeType
-      NumCacheNodes:
+      NumCacheClusters:
         Ref: NumCacheNodes
       CacheSubnetGroupName:
         Ref: ElasticacheSubnetGroup
-      VpcSecurityGroupIds:
+      AutomaticFailoverEnabled:
+        Ref: AutomaticFailoverEnabled
+      ReplicationGroupDescription:
+        Fn::Sub: ${Namespace}-${ServiceName}-${EnvironmentName}-cache
+      SecurityGroupIds:
         - Fn::ImportValue:
             Ref: ServiceSecurityGroup
+
+Outputs:
+  ElasticacheClusterEndpointAddress:
+    Description: "Elastic Cache Cluster Endpoint Address"
+    Value: 
+      Fn::Sub:
+        ${ElasticacheCluster.PrimaryEndPoint.Address}
+  ElasticacheClusterEndpointPort:
+    Description: "Elastic Cache Cluster Endpoint Port"
+    Value: 
+      Fn::Sub:
+        ${ElasticacheCluster.PrimaryEndPoint.Port}
