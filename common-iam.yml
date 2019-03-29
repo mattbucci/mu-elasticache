@@ -7,21 +7,7 @@ Resources:
           Version: '2012-10-17'
           Statement:
           - Action:
-            - elasticache:AddTagsToResource
-            - elasticache:AuthorizeCacheSecurityGroupIngress
-            - elasticache:CreateCacheCluster
-            - elasticache:CreateCacheSubnetGroup
-            - elasticache:DeleteCacheCluster
-            - elasticache:DeleteCacheSubnetGroup
-            - elasticache:DescribeCacheClusters
-            - elasticache:DescribeCacheSecurityGroups
-            - elasticache:DescribeCacheSubnetGroups
-            - elasticache:DescribeEvents
-            - elasticache:ListTagsForResource
-            - elasticache:ModifyCacheCluster
-            - elasticache:ModifyCacheSubnetGroup
-            - elasticache:RemoveTagsFromResource
-            - elasticache:RevokeCacheSecurityGroupIngress
+            - elasticache:*
             Resource: '*'
             Effect: Allow
           - Action:
