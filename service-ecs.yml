@@ -99,8 +99,14 @@ Outputs:
     Value: 
       Fn::Sub:
         ${ElasticacheCluster.PrimaryEndPoint.Address}
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-ElasticacheClusterEndpointAddress
   ElasticacheClusterEndpointPort:
     Description: "Elastic Cache Cluster Endpoint Port"
     Value: 
       Fn::Sub:
         ${ElasticacheCluster.PrimaryEndPoint.Port}
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-ElasticacheClusterEndpointPort
